@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK Director Salary vs Dividend Calculator — 2026/27</title>
+<style>
+  /* ═══════════════════════════════════════════════════════
+     BASE RESET & TOKENS
+  ═══════════════════════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --color-bg:        #f7f8fa;
+    --color-surface:   #ffffff;
+    --color-border:    #e2e5ea;
+    --color-text:      #1a1d23;
+    --color-text-2:    #5a5f6b;
+    --color-text-3:    #8a8f9a;
+    --color-accent:    #2563eb;
+    --color-accent-bg: #eff4ff;
+    --color-green:     #16a34a;
+    --color-green-bg:  #ecfdf5;
+    --color-red:       #dc2626;
+    --color-red-bg:    #fef2f2;
+    --color-amber:     #d97706;
+    --color-amber-bg:  #fffbeb;
+    --radius-sm:  6px;
+    --radius-md:  10px;
+    --radius-lg:  14px;
+    --shadow-sm:  0 1px 2px rgba(0,0,0,.04);
+    --shadow-md:  0 2px 8px rgba(0,0,0,.06);
+    --shadow-lg:  0 4px 16px rgba(0,0,0,.08);
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", Consolas, monospace;
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     TOP NAV BAR
+  ═══════════════════════════════════════════════════════ */
+  .topbar {
+    background: var(--color-text);
+    color: #fff;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+
+  /* ── Logo / brand ── */
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .topbar-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--color-accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .topbar-name {
+    font-size: 0.88rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  /* ── Tool title (right side) ── */
+  .topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,.55);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .topbar-title .divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,.18);
+    flex-shrink: 0;
+  }
+  .topbar-title span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════════════════════ */
+  .page-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  header h1 {
+    font-size: clamp(1.4rem, 3vw, 1.85rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-text);
+    line-height: 1.25;
+  }
+  header .subtitle {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: var(--color-text-2);
+  }
+  header .tax-year-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
+    border-radius: 999px;
+  }
+
+  /* ── INPUT CARD ────────────────────────────────────── */
+  .input-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+  }
+  .input-card h2 {
+    font-size: 1rem;
+    font-weight: 650;
+    margin-bottom: 20px;
+    color: var(--color-text);
+  }
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 550;
+    color: var(--color-text-2);
+    margin-bottom: 5px;
+  }
+  .field .input-wrap {
+    position: relative;
+  }
+  .field .input-wrap .prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-3);
+    pointer-events: none;
+  }
+  .field input[type="number"],
+  .field select {
+    width: 100%;
+    padding: 10px 12px 10px 28px;
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
+    color: var(--color-text);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    -moz-appearance: textfield;
+  }
+  .field select { padding-left: 12px; }
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+  }
+  .field input::-webkit-outer-spin-button,
+  .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .field .hint {
+    font-size: 0.72rem;
+    color: var(--color-text-3);
+    margin-top: 3px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-reset {
+    background: var(--color-bg);
+    color: var(--color-text-2);
+    border: 1px solid var(--color-border);
+  }
+  .btn-reset:hover { background: #eef0f3; }
+  .btn-print {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .btn-print:hover { background: #1d4ed8; }
+
+  /* ── DISCLAIMER ─────────────────────────────────────── */
+  .disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    background: var(--color-amber-bg);
+    border: 1px solid #fde68a;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #78350f;
+  }
+  .disclaimer .disclaimer-icon {
+    flex-shrink: 0;
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+  .disclaimer p {
+    margin: 0;
+  }
+
+  /* ── SAVINGS BANNER ────────────────────────────────── */
+  .savings-banner {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    font-size: 0.88rem;
+    font-weight: 550;
+    line-height: 1.45;
+  }
+  .savings-banner.show { display: flex; flex-wrap: wrap; }
+  .savings-banner.positive { background: var(--color-green-bg); color: #14532d; border: 1px solid #bbf7d0; }
+  .savings-banner .savings-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  /* ── TABLE ─────────────────────────────────────────── */
+  .table-wrap {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    margin-bottom: 28px;
+  }
+  .table-wrap h2 {
+    padding: 20px 24px 0;
+    font-size: 1rem;
+    font-weight: 650;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    min-width: 680px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--color-surface);
+    padding: 14px 16px 10px;
+    font-weight: 650;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-3);
+    text-align: right;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    padding: 11px 16px;
+    text-align: right;
+    border-bottom: 1px solid #f0f1f4;
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  tbody td:first-child {
+    text-align: left;
+    font-family: var(--font-sans);
+    font-weight: 550;
+    font-size: 0.82rem;
+    color: var(--color-text-2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.row-highlight td {
+    font-weight: 700;
+    color: var(--color-text);
+    background: #fafbfc;
+  }
+  tbody tr.row-net td {
+    border-top: 2px solid var(--color-border);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+  tbody tr.row-rate td {
+    color: var(--color-text-2);
+    font-size: 0.8rem;
+  }
+
+  /* Best-column highlight */
+  .col-best { background: var(--color-green-bg) !important; }
+  thead th.col-best {
+    color: var(--color-green);
+    background: var(--color-green-bg) !important;
+  }
+
+  /* ── EXPLANATION ────────────────────────────────────── */
+  .explanation-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 26px 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 28px;
+  }
+  .explanation-card h2 {
+    font-size: 1rem;
+    font-weight: 650;
+    margin-bottom: 14px;
+  }
+  .explanation-card p {
+    font-size: 0.88rem;
+    color: var(--color-text-2);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .explanation-card p:last-child { margin-bottom: 0; }
+  .explanation-card strong { color: var(--color-text); font-weight: 600; }
+
+  /* ── ASSUMPTIONS ────────────────────────────────────── */
+  .assumptions {
+    font-size: 0.75rem;
+    color: var(--color-text-3);
+    line-height: 1.6;
+    padding: 0 4px;
+  }
+  .assumptions ul {
+    list-style: disc;
+    padding-left: 18px;
+    margin-top: 6px;
+  }
+
+  /* ── PRINT ──────────────────────────────────────────── */
+  @media print {
+    body { background: #fff; }
+    .topbar { position: static; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .btn-row { display: none !important; }
+    .page-wrap { padding: 12px; }
+    .table-wrap { box-shadow: none; border: 1px solid #ccc; }
+    table { min-width: unset; font-size: 0.76rem; }
+    .input-card, .explanation-card, .savings-banner, .disclaimer { break-inside: avoid; }
+  }
+
+  /* ── MOBILE ─────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .topbar { padding: 0 14px; height: 48px; }
+    .topbar-name { font-size: 0.82rem; }
+    .topbar-title .divider,
+    .topbar-title span { display: none; }
+    .page-wrap { padding: 18px 14px 40px; }
+    .input-card, .explanation-card { padding: 20px 16px; }
+    .input-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.25rem; }
+    .savings-banner { font-size: 0.82rem; padding: 14px 16px; }
+    .table-wrap { border-radius: var(--radius-md); }
+    .table-wrap h2 { padding: 16px 16px 0; }
+    thead th, tbody td { padding: 9px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ TOP NAV BAR ════════════ -->
+<nav class="topbar" role="banner">
+  <a class="topbar-brand" href="#" aria-label="Mark Hall Systems">
+    <span class="topbar-mark" aria-hidden="true">MH</span>
+    <span class="topbar-name">Mark Hall Systems</span>
+  </a>
+  <div class="topbar-title">
+    <span class="divider"></span>
+    <span>UK Salary vs Dividend Calculator 2026/27</span>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ════════════ HEADER ════════════ -->
+  <header>
+    <h1>Director Salary vs Dividend Calculator</h1>
+    <p class="subtitle">Optimise your take-home pay as a UK limited company director</p>
+    <span class="tax-year-badge">2026 / 27 Tax Year</span>
+  </header>
+
+  <!-- ════════════ INPUTS ════════════ -->
+  <div class="input-card">
+    <h2>Your Details</h2>
+    <div class="input-grid">
+      <div class="field">
+        <label for="netProfit">Company net profit before director's pay</label>
+        <div class="input-wrap">
+          <span class="prefix">£</span>
+          <input type="number" id="netProfit" value="80000" min="0" step="1000">
+        </div>
+        <p class="hint">Profit before deducting your salary/employer NI</p>
+      </div>
+      <div class="field">
+        <label for="otherIncome">Director's other personal income</label>
+        <div class="input-wrap">
+          <span class="prefix">£</span>
+          <input type="number" id="otherIncome" value="0" min="0" step="100">
+        </div>
+        <p class="hint">Employment income, pensions, rental etc.</p>
+      </div>
+      <div class="field">
+        <label for="paUsed">Personal allowance already used</label>
+        <div class="input-wrap">
+          <span class="prefix">£</span>
+          <input type="number" id="paUsed" value="0" min="0" max="12570" step="100">
+        </div>
+        <p class="hint">How much of your £12,570 PA is used by other income</p>
+      </div>
+      <div class="field">
+        <label for="shareholders">Number of equal shareholders</label>
+        <select id="shareholders">
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <p class="hint">Dividends are split equally among shareholders</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-reset" onclick="resetInputs()">Reset</button>
+      <button class="btn btn-print" onclick="window.print()">Print Results</button>
+    </div>
+  </div>
+
+  <!-- ════════════ DISCLAIMER ════════════ -->
+  <div class="disclaimer">
+    <span class="disclaimer-icon" aria-hidden="true">&#9888;&#65039;</span>
+    <p>This tool provides illustrative estimates only and does not constitute tax, legal or financial advice. Tax rules are complex and personal circumstances vary. Always consult a qualified accountant before making decisions.</p>
+  </div>
+
+  <!-- ════════════ SAVINGS BANNER ════════════ -->
+  <div class="savings-banner positive" id="savingsBanner"></div>
+
+  <!-- ════════════ RESULTS TABLE ════════════ -->
+  <div class="table-wrap">
+    <h2>Scenario Comparison</h2>
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Optimal</th>
+          <th>All Salary</th>
+          <th>50 / 50</th>
+          <th>All Dividends</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ════════════ EXPLANATION ════════════ -->
+  <div class="explanation-card" id="explanation">
+    <h2>What This Means</h2>
+    <div id="explanationText"></div>
+  </div>
+
+  <!-- ════════════ ASSUMPTIONS ════════════ -->
+  <div class="assumptions">
+    <strong>Assumptions &amp; notes</strong>
+    <ul>
+      <li>England/Wales/NI income tax rates. Scottish rates differ.</li>
+      <li>Employment Allowance is not claimed (director is sole employee or company is excluded).</li>
+      <li>The "Optimal" scenario sets salary at the employee NI Primary Threshold (£12,570) to avoid employee NI while still qualifying for state pension credits, then pays the remainder as dividends.</li>
+      <li>Corporation tax thresholds are divided by total number of associated companies (assumed 1 here — the company itself).</li>
+      <li>Dividend allowance (£500) is applied per shareholder.</li>
+      <li>No student loan, pension contributions or other deductions are modelled.</li>
+      <li>Rates: Personal allowance £12,570 (frozen); basic rate 20% to £50,270; higher 40% to £125,140; additional 45% above. Dividend tax 10.75% / 35.75% / 39.35%. Employee NI 8% / 2%. Employer NI 15% above £5,000. Corporation tax 19% small profits / 25% main / marginal relief 3/200.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   2026/27 UK TAX THRESHOLDS & RATES
+   Source: GOV.UK — Rates and thresholds for employers
+   2026 to 2027, published 30 Jan 2026.
+   Dividend rate increases from KPPCA / RBC Brewin Dolphin
+   confirmation of Autumn Budget 2025 changes.
+═══════════════════════════════════════════════════════ */
+
+// ── Income Tax (England/Wales/NI) ──────────────────────
+const PERSONAL_ALLOWANCE      = 12570;   // Frozen until at least 2028
+const PA_TAPER_THRESHOLD      = 100000;  // PA reduced by £1 for every £2 over £100k
+const BASIC_RATE_LIMIT        = 37700;   // Band above PA — so basic rate ends at £50,270
+const HIGHER_RATE_LIMIT       = 125140;  // Additional rate starts above this
+const INCOME_TAX_BASIC        = 0.20;
+const INCOME_TAX_HIGHER       = 0.40;
+const INCOME_TAX_ADDITIONAL   = 0.45;
+
+// ── Dividend Tax ───────────────────────────────────────
+const DIVIDEND_ALLOWANCE      = 500;     // Frozen at £500
+// 2026/27: +2pp on basic and higher vs 2025/26
+const DIV_TAX_BASIC           = 0.1075;  // Was 8.75%, now 10.75%
+const DIV_TAX_HIGHER          = 0.3575;  // Was 33.75%, now 35.75%
+const DIV_TAX_ADDITIONAL      = 0.3935;  // Unchanged at 39.35%
+
+// ── National Insurance (Class 1) ───────────────────────
+// Employee (primary) — Category A
+const NI_PRIMARY_THRESHOLD    = 12570;   // £242/week — frozen
+const NI_UPPER_EARNINGS       = 50270;   // £967/week — frozen
+const NI_EMPLOYEE_MAIN        = 0.08;    // 8% between PT and UEL
+const NI_EMPLOYEE_UPPER       = 0.02;    // 2% above UEL
+
+// Employer (secondary) — all at 15% above ST
+const NI_SECONDARY_THRESHOLD  = 5000;    // £96/week — reduced from £9,100 in 24/25
+const NI_EMPLOYER_RATE        = 0.15;    // Increased from 13.8% in 24/25
+
+// ── Corporation Tax ────────────────────────────────────
+const CT_SMALL_RATE           = 0.19;    // Profits ≤ £50,000
+const CT_MAIN_RATE            = 0.25;    // Profits > £250,000
+const CT_LOWER_LIMIT          = 50000;
+const CT_UPPER_LIMIT          = 250000;
+const CT_MARGINAL_FRACTION    = 3 / 200; // 0.015 — standard fraction
+
+/* ═══════════════════════════════════════════════════════
+   HELPER: UK CURRENCY FORMATTING
+═══════════════════════════════════════════════════════ */
+const fmt = (n) => {
+  const abs = Math.abs(n);
+  const s   = abs.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return (n < 0 ? '-£' : '£') + s;
+};
+const fmtPct = (n) => (n * 100).toFixed(1) + '%';
+
+/* ═══════════════════════════════════════════════════════
+   PERSONAL ALLOWANCE TAPER
+   PA is reduced by £1 for every £2 of 'adjusted net
+   income' above £100,000.  Full taper at £125,140.
+
+   The 'paUsed' parameter accounts for PA already
+   consumed by income NOT modelled in 'otherIncome'
+   (e.g. state pension entered separately).
+═══════════════════════════════════════════════════════ */
+function calcEffectivePA(totalGrossIncome, paAlreadyUsed) {
+  // Step 1 — taper based on total gross income
+  let pa = PERSONAL_ALLOWANCE; // £12,570
+  if (totalGrossIncome > PA_TAPER_THRESHOLD) {
+    const reduction = Math.floor((totalGrossIncome - PA_TAPER_THRESHOLD) / 2);
+    pa = Math.max(0, pa - reduction);
+  }
+  // Step 2 — subtract PA already consumed elsewhere
+  pa = Math.max(0, pa - paAlreadyUsed);
+  return pa;
+}
+
+/*
+ * SANITY CHECK — PA taper examples:
+ *   Gross £80,000, paUsed 0 → PA = £12,570 (no taper, below £100k)
+ *   Gross £110,000, paUsed 0 → reduction = (110000−100000)/2 = 5000 → PA = £7,570
+ *   Gross £125,140, paUsed 0 → reduction = 12570 → PA = £0
+ *   Gross £146,496, paUsed 0 → reduction = 23248 → PA = £0 (fully tapered)
+ *   Gross £80,000, paUsed 5000 → PA = 12570 − 5000 = £7,570
+ */
+
+/* ═══════════════════════════════════════════════════════
+   INCOME TAX (non-savings, non-dividend)
+
+   Band boundaries in GROSS income terms:
+     £0           → PA          : 0%
+     PA           → PA + £37,700: 20%  (basic)
+     PA + £37,700 → £125,140    : 40%  (higher)
+     £125,140+                  : 45%  (additional)
+
+   When PA is tapered to £0 the basic band starts at £0
+   and runs to £37,700; the effective rate between £100k
+   and £125,140 reaches ~60% due to the simultaneous
+   loss of PA.
+═══════════════════════════════════════════════════════ */
+function calcIncomeTax(gross, personalAllowance) {
+  if (gross <= 0) return 0;
+
+  // Taxable income = gross minus whatever PA remains
+  const taxable = Math.max(0, gross - personalAllowance);
+
+  // --- Basic rate: first £37,700 of taxable ---
+  const basicPortion = Math.min(taxable, BASIC_RATE_LIMIT);
+
+  // --- Higher rate: taxable from £37,700 up to (£125,140 − PA) ---
+  //     The higher band always ends at £125,140 gross, so in
+  //     "taxable" terms the ceiling moves with PA.
+  const higherCeiling = Math.max(0, HIGHER_RATE_LIMIT - personalAllowance);
+  const higherPortion = Math.min(
+    Math.max(0, taxable - BASIC_RATE_LIMIT),
+    Math.max(0, higherCeiling - BASIC_RATE_LIMIT)
+  );
+
+  // --- Additional rate: everything above £125,140 gross ---
+  const additionalPortion = Math.max(0, taxable - higherCeiling);
+
+  return basicPortion      * INCOME_TAX_BASIC
+       + higherPortion      * INCOME_TAX_HIGHER
+       + additionalPortion  * INCOME_TAX_ADDITIONAL;
+}
+
+/*
+ * SANITY CHECK — income tax examples (full PA £12,570):
+ *   Gross £12,570, PA £12,570 → taxable 0 → tax £0
+ *   Gross £50,270, PA £12,570 → taxable 37,700 → 37700×20% = £7,540
+ *   Gross £60,000, PA £12,570 → taxable 47,430
+ *     basic 37,700×20% = 7,540; higher 9,730×40% = 3,892 → £11,432
+ *   Gross £150,000, PA £0 (tapered) → taxable 150,000
+ *     basic 37,700×20% = 7,540; higher ceiling 125,140
+ *     higher (125,140−37,700)=87,440×40% = 34,976
+ *     additional (150,000−125,140)=24,860×45% = 11,187 → £53,703
+ */
+
+/* ═══════════════════════════════════════════════════════
+   DIVIDEND TAX
+   Dividends sit ON TOP of non-dividend income in the
+   bands.  The £500 dividend allowance charges 0% but
+   still occupies band space (it doesn't extend a band).
+
+   Band boundaries in GROSS income:
+     0 → PA                     : covered by PA (0%)
+     PA → PA + £37,700          : basic  (10.75%)
+     PA + £37,700 → £125,140    : higher (35.75%)
+     £125,140+                  : additional (39.35%)
+
+   IMPORTANT: basicEnd must use the TAPERED PA passed in,
+   not the £12,570 constant.  When PA = 0 the basic band
+   runs from £0 to £37,700 gross.
+═══════════════════════════════════════════════════════ */
+function calcDividendTax(dividendIncome, nonDivGross, personalAllowance) {
+  if (dividendIncome <= 0) return 0;
+
+  // Any PA left over after non-dividend income absorbs it?
+  const paUsedByNonDiv = Math.min(nonDivGross, personalAllowance);
+  const paLeftForDiv   = Math.max(0, personalAllowance - paUsedByNonDiv);
+
+  // Dividends covered by remaining PA (tax-free)
+  let divTaxable = Math.max(0, dividendIncome - paLeftForDiv);
+
+  // £500 dividend allowance at 0% (uses band space but no tax)
+  const allowanceUsed = Math.min(divTaxable, DIVIDEND_ALLOWANCE);
+  divTaxable -= allowanceUsed;
+
+  if (divTaxable <= 0) return 0;
+
+  // Gross income "reached" before taxable dividends start
+  let incomeReached = nonDivGross + paLeftForDiv + allowanceUsed;
+
+  // ── Band boundaries using TAPERED PA (the fix) ──────────
+  const basicEnd  = personalAllowance + BASIC_RATE_LIMIT; // PA + 37,700
+  const higherEnd = HIGHER_RATE_LIMIT;                    // always £125,140
+
+  let tax = 0;
+  let remaining = divTaxable;
+
+  // Basic-rate band space
+  const basicSpace = Math.max(0, basicEnd - incomeReached);
+  if (basicSpace > 0 && remaining > 0) {
+    const inBasic = Math.min(remaining, basicSpace);
+    tax += inBasic * DIV_TAX_BASIC;
+    remaining -= inBasic;
+    incomeReached += inBasic;
+  }
+
+  // Higher-rate band space
+  const higherSpace = Math.max(0, higherEnd - Math.max(incomeReached, basicEnd));
+  if (higherSpace > 0 && remaining > 0) {
+    const inHigher = Math.min(remaining, higherSpace);
+    tax += inHigher * DIV_TAX_HIGHER;
+    remaining -= inHigher;
+    incomeReached += inHigher;
+  }
+
+  // Additional rate — everything above £125,140
+  if (remaining > 0) {
+    tax += remaining * DIV_TAX_ADDITIONAL;
+  }
+
+  return tax;
+}
+
+/*
+ * SANITY CHECK — dividend tax (PA=0, nonDiv=£42,570, divs=£103,926):
+ *   paLeftForDiv = 0, divTaxable = 103,926, allowance = 500
+ *   divTaxable after allowance = 103,426
+ *   incomeReached = 42,570 + 0 + 500 = 43,070
+ *   basicEnd = 0 + 37,700 = 37,700 → basicSpace = 0 (already past it)
+ *   higherSpace = 125,140 − 43,070 = 82,070
+ *   inHigher = 82,070 × 35.75% = £29,340.03
+ *   inAdditional = 103,426 − 82,070 = 21,356 × 39.35% = £8,403.74
+ *   Total dividend tax = £37,743.77
+ *
+ * SANITY CHECK — dividend tax (PA=£12,570, nonDiv=£12,570, divs=£52,476):
+ *   paLeftForDiv = 0, divTaxable = 52,476, allowance = 500
+ *   divTaxable after allowance = 51,976
+ *   incomeReached = 12,570 + 0 + 500 = 13,070
+ *   basicEnd = 12,570 + 37,700 = 50,270 → basicSpace = 37,200
+ *   inBasic = 37,200 × 10.75% = £3,999.00
+ *   higherSpace = 125,140 − 50,270 = 74,870
+ *   inHigher = min(14,776, 74,870) = 14,776 × 35.75% = £5,282.42
+ *   Total dividend tax = £9,281.42
+ */
+
+/* ═══════════════════════════════════════════════════════
+   EMPLOYEE NI (Class 1 Primary — Category A)
+   0% up to PT (£12,570)
+   8% from PT to UEL (£50,270)
+   2% above UEL
+═══════════════════════════════════════════════════════ */
+function calcEmployeeNI(salary) {
+  if (salary <= NI_PRIMARY_THRESHOLD) return 0;
+  let ni = 0;
+  const mainBand = Math.min(salary, NI_UPPER_EARNINGS) - NI_PRIMARY_THRESHOLD;
+  ni += Math.max(0, mainBand) * NI_EMPLOYEE_MAIN;
+  const upperBand = salary - NI_UPPER_EARNINGS;
+  if (upperBand > 0) ni += upperBand * NI_EMPLOYEE_UPPER;
+  return ni;
+}
+
+/* ═══════════════════════════════════════════════════════
+   EMPLOYER NI (Class 1 Secondary)
+   15% on all earnings above ST (£5,000)
+   No upper limit.
+═══════════════════════════════════════════════════════ */
+function calcEmployerNI(salary) {
+  if (salary <= NI_SECONDARY_THRESHOLD) return 0;
+  return (salary - NI_SECONDARY_THRESHOLD) * NI_EMPLOYER_RATE;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CORPORATION TAX
+   Small profits rate : 19%   (profits ≤ lower limit)
+   Main rate          : 25%   (profits > upper limit)
+   Marginal relief band: lower → upper limit
+
+   HMRC formula for marginal relief:
+     MR = F × (U − A) × (N / A)
+   where
+     F = standard fraction (3/200 = 0.015)
+     U = upper limit (£250,000 ÷ number of associated cos)
+     A = augmented profits (taxable profits + exempt
+         distributions from non-group companies)
+     N = taxable total profits
+
+   In this calculator we assume no exempt distributions,
+   so A = N and the ratio N/A = 1.  The formula simplifies
+   to:  MR = F × (U − N).
+
+   Thresholds are divided by the number of associated
+   companies (including this one).
+═══════════════════════════════════════════════════════ */
+function calcCorpTax(taxableProfit, numAssociated) {
+  if (taxableProfit <= 0) return 0;
+
+  // Adjust thresholds for associated companies
+  const lowerLimit = CT_LOWER_LIMIT / numAssociated;
+  const upperLimit = CT_UPPER_LIMIT / numAssociated;
+
+  if (taxableProfit <= lowerLimit) {
+    // Small profits rate
+    return taxableProfit * CT_SMALL_RATE;
+  }
+
+  if (taxableProfit >= upperLimit) {
+    // Main rate
+    return taxableProfit * CT_MAIN_RATE;
+  }
+
+  // Marginal relief zone — charge at 25% then deduct relief
+  const mainTax        = taxableProfit * CT_MAIN_RATE;
+  const marginalRelief = CT_MARGINAL_FRACTION * (upperLimit - taxableProfit);
+  //                   = (3/200) × (U − N)    [since N = A]
+
+  return mainTax - marginalRelief;
+}
+
+/*
+ * SANITY CHECK — corporation tax (HMRC published examples):
+ *   Profit £40,000  → 40,000 × 19% = £7,600  (below lower limit)
+ *   Profit £100,000 → 100,000 × 25% = 25,000
+ *       MR = (3/200) × (250,000 − 100,000) = 2,250
+ *       CT = 25,000 − 2,250 = £22,750  (eff. 22.75%)  ✓ matches HMRC
+ *   Profit £120,000 → 120,000 × 25% = 30,000
+ *       MR = (3/200) × (250,000 − 120,000) = 1,950
+ *       CT = 30,000 − 1,950 = £28,050  (eff. 23.375%) ✓ matches HMRC
+ *   Profit £250,000 → 250,000 × 25% = £62,500 (at upper limit)
+ *   Profit £50,000  → 50,000 × 19%  = £9,500  (at lower limit)
+ *   Effective marginal rate in the band = 26.5%
+ */
+
+/* ═══════════════════════════════════════════════════════
+   SCENARIO CALCULATOR
+   For a given salary amount, compute the full picture
+   for one shareholder.
+═══════════════════════════════════════════════════════ */
+function calcScenario(companyProfit, salary, otherIncome, paUsed, numShareholders) {
+  // ── Company side ──
+  const employerNI         = calcEmployerNI(salary);
+  const profitAfterSalary  = Math.max(0, companyProfit - salary - employerNI);
+  const corpTax            = calcCorpTax(profitAfterSalary, 1);
+  const dividendPerPerson  = (profitAfterSalary - corpTax) / numShareholders;
+
+  // ── Personal side ──
+  const totalNonDivIncome  = salary + otherIncome;
+  const totalGross         = totalNonDivIncome + dividendPerPerson;
+
+  // Effective PA: taper based on total gross, then reduce by paUsed
+  const effectivePA = calcEffectivePA(totalGross, paUsed);
+
+  // Income tax on salary: tax all non-div income, subtract tax
+  // attributable to other income alone → gives marginal tax on salary.
+  // Both calls use the SAME tapered PA so band stacking is correct.
+  const taxOnTotalNonDiv   = calcIncomeTax(totalNonDivIncome, effectivePA);
+  const taxOnOtherOnly     = calcIncomeTax(otherIncome, effectivePA);
+  const incomeTaxOnSalary  = Math.max(0, taxOnTotalNonDiv - taxOnOtherOnly);
+
+  // Employee NI (Class 1 primary — only on salary, not other income)
+  const employeeNI = calcEmployeeNI(salary);
+
+  // Dividend tax (dividends sit on top of non-div income in the bands)
+  const divTax = calcDividendTax(dividendPerPerson, totalNonDivIncome, effectivePA);
+
+  // ── Totals ──
+  const totalPersonalTax  = incomeTaxOnSalary + employeeNI + divTax;
+  const netPersonalIncome = salary + dividendPerPerson - totalPersonalTax;
+  const effectiveRate     = (salary + dividendPerPerson) > 0
+    ? totalPersonalTax / (salary + dividendPerPerson) : 0;
+
+  return {
+    salary,
+    employerNI,
+    employeeNI,
+    incomeTax: incomeTaxOnSalary,
+    profitAfterSalary,
+    corpTax,
+    dividendsAvailable: dividendPerPerson,
+    divTax,
+    totalPersonalTax,
+    netPersonalIncome,
+    effectiveRate,
+    totalTax: totalPersonalTax + employerNI + corpTax
+  };
+}
+
+/*
+ * SANITY CHECK — full scenario (profit £150k, other £30k, paUsed 0, 1 shareholder):
+ *   Salary £12,570; ER NI = (12,570 − 5,000) × 15% = £1,135.50
+ *   Profit after = 150,000 − 12,570 − 1,135.50 = £136,294.50
+ *   CT = 136,294.50 × 25% − (3/200) × (250,000 − 136,294.50)
+ *      = 34,073.63 − 1,705.58 = £32,368.04
+ *   Dividends = 136,294.50 − 32,368.04 = £103,926.46
+ *   Total gross = 42,570 + 103,926.46 = £146,496.46
+ *   PA taper: (146,496.46 − 100,000)/2 = 23,248.23 → PA = £0 (fully tapered) ✓
+ *   Income tax on salary: calcIncomeTax(42,570, 0) − calcIncomeTax(30,000, 0)
+ *     = (37,700×20% + 4,870×40%) − (30,000×20%) = 9,488 − 6,000 = £3,488
+ *   Employee NI = £0 (salary at PT)
+ *   Dividend tax: basicEnd = 0 + 37,700 = 37,700
+ *     incomeReached = 42,570 + 0 + 500 = 43,070 → basicSpace = 0
+ *     higherSpace = 125,140 − 43,070 = 82,070
+ *     inHigher = 82,070 × 35.75% = £29,340.03
+ *     inAdditional = (103,426.46 − 82,070) = 21,356.46 × 39.35% = £8,403.77
+ *     divTax = £37,743.79
+ *   Total personal tax = 3,488 + 0 + 37,743.79 = £41,231.79
+ *   Net = 12,570 + 103,926.46 − 41,231.79 = £75,264.67
+ *   Effective rate = 41,231.79 / 116,496.46 = 35.4%
+ */
+
+/* ═══════════════════════════════════════════════════════
+   RUN ALL 4 SCENARIOS
+═══════════════════════════════════════════════════════ */
+function calculate() {
+  const companyProfit  = Math.max(0, parseFloat(document.getElementById('netProfit').value) || 0);
+  const otherIncome    = Math.max(0, parseFloat(document.getElementById('otherIncome').value) || 0);
+  const paUsed         = Math.max(0, Math.min(PERSONAL_ALLOWANCE,
+                           parseFloat(document.getElementById('paUsed').value) || 0));
+  const numShareholders = parseInt(document.getElementById('shareholders').value) || 1;
+
+  // Scenario 1: OPTIMAL — salary at NI primary threshold, rest as dividends
+  const optimalSalary = NI_PRIMARY_THRESHOLD;
+
+  // Scenario 2: ALL SALARY — entire profit as salary (need to solve for gross salary
+  // where salary + employer NI = company profit)
+  // salary + 0.15 * max(0, salary - 5000) = companyProfit
+  // If salary > 5000:  salary + 0.15*salary - 750 = profit
+  //                    1.15*salary = profit + 750
+  //                    salary = (profit + 750) / 1.15
+  let allSalary;
+  if (companyProfit <= NI_SECONDARY_THRESHOLD) {
+    allSalary = companyProfit;  // No ER NI below £5,000
+  } else {
+    allSalary = (companyProfit + NI_SECONDARY_THRESHOLD * NI_EMPLOYER_RATE) / (1 + NI_EMPLOYER_RATE);
+    // = (profit + 750) / 1.15
+  }
+  allSalary = Math.max(0, allSalary);
+
+  // Scenario 3: 50/50 — half as salary, half available for dividends
+  // "50/50" means we target salary = 50% of company profit (before ER NI adjustment)
+  // Actually, let's define it as: salary + ER NI uses 50% of profit, rest goes to CT then dividends
+  const halfProfit = companyProfit / 2;
+  let fiftyFiftySalary;
+  if (halfProfit <= NI_SECONDARY_THRESHOLD) {
+    fiftyFiftySalary = halfProfit;
+  } else {
+    fiftyFiftySalary = (halfProfit + NI_SECONDARY_THRESHOLD * NI_EMPLOYER_RATE) / (1 + NI_EMPLOYER_RATE);
+  }
+  fiftyFiftySalary = Math.max(0, fiftyFiftySalary);
+
+  // Scenario 4: ALL DIVIDENDS — no salary, everything through company
+  const allDivSalary = 0;
+
+  const scenarios = [
+    calcScenario(companyProfit, optimalSalary,      otherIncome, paUsed, numShareholders),
+    calcScenario(companyProfit, allSalary,           otherIncome, paUsed, numShareholders),
+    calcScenario(companyProfit, fiftyFiftySalary,    otherIncome, paUsed, numShareholders),
+    calcScenario(companyProfit, allDivSalary,        otherIncome, paUsed, numShareholders),
+  ];
+
+  renderTable(scenarios);
+  renderExplanation(scenarios, companyProfit, numShareholders);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER TABLE
+═══════════════════════════════════════════════════════ */
+function renderTable(scenarios) {
+  const labels = ['Optimal', 'All Salary', '50 / 50', 'All Dividends'];
+
+  // Find best scenario (highest net personal income)
+  let bestIdx = 0;
+  scenarios.forEach((s, i) => {
+    if (s.netPersonalIncome > scenarios[bestIdx].netPersonalIncome) bestIdx = i;
+  });
+
+  // Find worst
+  let worstIdx = 0;
+  scenarios.forEach((s, i) => {
+    if (s.netPersonalIncome < scenarios[worstIdx].netPersonalIncome) worstIdx = i;
+  });
+
+  const rows = [
+    { label: 'Gross salary',          key: 'salary',             format: fmt },
+    { label: 'Employer NI',           key: 'employerNI',         format: fmt },
+    { label: 'Employee NI',           key: 'employeeNI',         format: fmt },
+    { label: 'Income tax on salary',  key: 'incomeTax',          format: fmt },
+    { label: 'Profit after salary + ER NI', key: 'profitAfterSalary', format: fmt, cls: 'row-highlight' },
+    { label: 'Corporation tax',       key: 'corpTax',            format: fmt },
+    { label: 'Dividends available',   key: 'dividendsAvailable', format: fmt },
+    { label: 'Dividend tax',          key: 'divTax',             format: fmt },
+    { label: 'Total personal tax',    key: 'totalPersonalTax',   format: fmt, cls: 'row-highlight' },
+    { label: 'Net personal income',   key: 'netPersonalIncome',  format: fmt, cls: 'row-net' },
+    { label: 'Effective personal tax rate', key: 'effectiveRate', format: fmtPct, cls: 'row-rate' },
+  ];
+
+  // Update headers
+  const ths = document.querySelectorAll('#resultsTable thead th');
+  ths.forEach((th, i) => {
+    if (i === 0) return;
+    th.className = (i - 1 === bestIdx) ? 'col-best' : '';
+    th.textContent = labels[i - 1] + (i - 1 === bestIdx ? ' ★' : '');
+  });
+
+  let html = '';
+  rows.forEach(row => {
+    html += `<tr class="${row.cls || ''}">`;
+    html += `<td>${row.label}</td>`;
+    scenarios.forEach((s, i) => {
+      const cls = (i === bestIdx) ? ' class="col-best"' : '';
+      html += `<td${cls}>${row.format(s[row.key])}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  document.getElementById('resultsBody').innerHTML = html;
+
+  // Savings banner
+  const saving = scenarios[bestIdx].netPersonalIncome - scenarios[worstIdx].netPersonalIncome;
+  const banner = document.getElementById('savingsBanner');
+  if (saving > 0) {
+    banner.innerHTML = `
+      <span>The <strong>${labels[bestIdx]}</strong> approach saves you
+      <span class="savings-amount">${fmt(Math.round(saving))}</span>
+      per year vs the <strong>${labels[worstIdx]}</strong> approach.</span>`;
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER PLAIN ENGLISH EXPLANATION
+═══════════════════════════════════════════════════════ */
+function renderExplanation(scenarios, companyProfit, numShareholders) {
+  const labels = ['Optimal', 'All Salary', '50/50', 'All Dividends'];
+  let bestIdx = 0;
+  scenarios.forEach((s, i) => {
+    if (s.netPersonalIncome > scenarios[bestIdx].netPersonalIncome) bestIdx = i;
+  });
+  let worstIdx = 0;
+  scenarios.forEach((s, i) => {
+    if (s.netPersonalIncome < scenarios[worstIdx].netPersonalIncome) worstIdx = i;
+  });
+
+  const best  = scenarios[bestIdx];
+  const worst = scenarios[worstIdx];
+  const saving = best.netPersonalIncome - worst.netPersonalIncome;
+  const sh = numShareholders > 1 ? ` (per shareholder, assuming ${numShareholders} equal shareholders)` : '';
+
+  let text = '';
+  text += `<p>With <strong>${fmt(companyProfit)}</strong> of company profit before director's pay, the <strong>${labels[bestIdx]}</strong> strategy produces the highest take-home income of <strong>${fmt(Math.round(best.netPersonalIncome))}</strong>${sh}, at an effective personal tax rate of <strong>${fmtPct(best.effectiveRate)}</strong>.</p>`;
+
+  if (saving > 1) {
+    text += `<p>This saves you <strong>${fmt(Math.round(saving))}</strong> per year compared to the worst option (<strong>${labels[worstIdx]}</strong>), which nets only <strong>${fmt(Math.round(worst.netPersonalIncome))}</strong>.</p>`;
+  }
+
+  if (bestIdx === 0) {
+    text += `<p>The Optimal approach works by setting your salary at <strong>${fmt(best.salary)}</strong> — just at the NI Primary Threshold — avoiding employee National Insurance while still qualifying for state pension credits. The remaining profit is subject to corporation tax at an effective rate that depends on the profit level, and the after-tax amount is distributed as dividends, which are taxed at lower rates than salary.</p>`;
+  } else if (bestIdx === 3) {
+    text += `<p>In this case, taking <strong>no salary</strong> and drawing all income as dividends is most efficient. This is unusual and typically occurs when other income already covers the personal allowance or the profit level makes dividend tax rates more favourable overall.</p>`;
+  }
+
+  if (companyProfit > 50000 && companyProfit <= 250000) {
+    text += `<p>Your company profit falls within the <strong>marginal relief</strong> band (£50,000–£250,000), where the effective corporation tax rate gradually increases from 19% to 25%. The salary you draw reduces the profit subject to corporation tax, creating a trade-off between personal tax and corporate tax savings.</p>`;
+  }
+
+  if (numShareholders > 1) {
+    text += `<p>With <strong>${numShareholders} shareholders</strong>, dividends are split equally, keeping each person in a lower tax band and making the dividend route more tax-efficient overall.</p>`;
+  }
+
+  text += `<p><strong>Note:</strong> These figures are indicative. Your actual position may differ depending on pension contributions, student loans, other shareholdings, associated companies, and timing of dividend payments. Always consult a qualified accountant before making tax-planning decisions.</p>`;
+
+  document.getElementById('explanationText').innerHTML = text;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET & LISTENERS
+═══════════════════════════════════════════════════════ */
+function resetInputs() {
+  document.getElementById('netProfit').value    = '';
+  document.getElementById('otherIncome').value  = '';
+  document.getElementById('paUsed').value       = '';
+  document.getElementById('shareholders').value = '1';
+  calculate();
+}
+
+// Real-time recalculation on any input change
+['netProfit', 'otherIncome', 'paUsed', 'shareholders'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculate);
+});
+
+// Initial calculation
+calculate();
+</script>
+</body>
+</html>
